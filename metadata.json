@@ -1,0 +1,6 @@
+{
+  "name": "Antigravity AI Job Agent",
+  "description": "AI-powered job search agent and resume tailoring platform for job seekers, automating listing discovery and personalized resume optimization.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
