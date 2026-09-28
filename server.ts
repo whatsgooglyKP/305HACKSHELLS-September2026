@@ -518,7 +518,12 @@ app.post('/api/chat', async (req, res) => {
 const startServer = async () => {
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        watch: {
+          ignored: ['**/*.mp4', '**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.docx', '**/*.log', '**/.git/**']
+        }
+      },
       appType: 'spa'
     });
     app.use(vite.middlewares);

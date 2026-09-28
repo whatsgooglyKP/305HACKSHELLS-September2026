@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
-    allowedHosts: true
+    allowedHosts: true,
+    watch: {
+      ignored: ['**/*.mp4', '**/*.jpg', '**/*.jpeg', '**/*.png', '**/*.docx', '**/*.log', '**/.git/**']
+    }
   }
 });
