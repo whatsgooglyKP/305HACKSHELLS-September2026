@@ -8,7 +8,7 @@ Built for the **305 Hackathon (September 2026)**, this AI agent serves single mo
 > **No API keys or environment variables required!** The agent includes an embedded **Dynamic 305 Offline Reasoning Engine** that runs out-of-the-box.
 > 1. `git clone https://github.com/whatsgooglyKP/305HACKSHELLS-September2026.git`
 > 2. `cd 305HACKSHELLS-September2026 && npm install`
-> 3. `npm run dev` ➔ Open **http://localhost:3000**
+> 3. `npm run dev` ➔ Open **http://localhost:xxxx** (mine was **http://localhost:3000**).
 > 
 > 👉 **For the 2-minute guided evaluation tour and copy-paste test prompts, see the [Judge Quickstart & Demo Guide (JUDGES_DEMO_GUIDE.md)](JUDGES_DEMO_GUIDE.md).**
 
