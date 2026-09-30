@@ -27,7 +27,7 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
   const [messages, setMessages] = useState<{ sender: 'user' | 'ai'; text: string }[]>([
     {
       sender: 'ai',
-      text: `Hello ${profile.name.split(' ')[0]}! I am your OCPS Financial Stability Coach. Balancing work, bills, and children is incredibly hard, but you are not alone. Ask me about local childcare subsidies (like ELC), utility assistance programs in Orange County, or tips on budgeting and finding flexible career opportunities!`
+      text: `Hello ${profile.name.split(' ')[0]}! I am your Miami-Dade Financial Stability Coach. Balancing work, bills, and children is incredibly hard, but you are not alone. Ask me about local childcare subsidies (like ELC of Miami-Dade/Monroe), utility assistance programs in Miami-Dade County, or tips on budgeting and finding flexible career opportunities!`
     }
   ]);
   const [inputText, setInputText] = useState<string>('');
@@ -41,31 +41,31 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
   const localResources: LocalResource[] = [
     {
       category: 'childcare',
-      name: 'Early Learning Coalition of Orange County (ELC)',
-      description: 'Provides School Readiness child care subsidies that can pay up to 80-150% of child care/daycare costs for working single parents or parents enrolled in education/training programs.',
-      contact: 'Phone: (407) 835-2500',
-      url: 'https://www.elcoforange.org'
+      name: 'Early Learning Coalition of Miami-Dade/Monroe (ELC)',
+      description: 'Provides School Readiness child care subsidies that cover a majority of child care/daycare costs for working single parents or parents enrolled in education/training programs.',
+      contact: 'Phone: (305) 646-7220',
+      url: 'https://www.elcmdm.org'
     },
     {
       category: 'housing',
-      name: 'Orange County Family Services - Community Action',
-      description: 'Offers emergency rental support, utility bill assistance (LIHEAP), and water bill payment assistance programs for low-to-moderate-income families in Orange County.',
-      contact: 'Phone: (407) 836-9333',
-      url: 'https://www.orangecountyfl.net/FamiliesHealthSocialServices/FamilyServices.aspx'
+      name: 'Miami-Dade CAHSD - Community Action & Human Services',
+      description: 'Offers emergency rental support, utility bill assistance (LIHEAP), and water bill payment assistance programs for low-to-moderate-income families in Miami-Dade County.',
+      contact: 'Phone: (786) 469-4600',
+      url: 'https://www.miamidade.gov/global/socialservices/home.page'
     },
     {
       category: 'food',
-      name: 'Second Harvest Food Bank of Central Florida',
-      description: 'Provides family food assistance boxes and hosts local school food markets directly within several Orange County Public Schools (OCPS) campuses.',
-      contact: 'Phone: (407) 295-1066',
-      url: 'https://www.feedhopenow.org'
+      name: 'Feeding South Florida & Farm Share Miami-Dade',
+      description: 'Provides family food assistance boxes and hosts local school food markets directly within Miami-Dade County Public Schools (M-DCPS) campuses.',
+      contact: 'Phone: (305) 631-4211 (JCS 211)',
+      url: 'https://feedingsouthflorida.org'
     },
     {
       category: 'career',
-      name: 'CareerSource Central Florida',
-      description: 'Offers single parents fully funded vocational scholarship vouchers, tuition grants, job placement services, and career coaching to move into high-paying, flexible administration roles.',
-      contact: 'Phone: (800) 757-4598',
-      url: 'https://www.careersourcecentralflorida.com'
+      name: 'CareerSource South Florida',
+      description: 'Offers single mothers fully funded WIOA vocational scholarship vouchers, tuition grants, job placement services, and career coaching across Miami-Dade County.',
+      contact: 'Phone: (305) 594-7615',
+      url: 'https://careersourcesfl.com'
     }
   ];
 
@@ -80,8 +80,8 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
 
     try {
       const promptContext = `
-        You are the "OCPS Single Mom Financial Stability Advisor", an empathetic AI coach specialized in assisting single mothers in Orange County, Florida.
-        The user is ${profile.name}, a single mother of ${numKids} living in Orlando, FL.
+        You are the "Miami-Dade Single Mother Financial Stability Advisor", an empathetic AI coach specialized in assisting single mothers in Miami-Dade County, Florida.
+        The user is ${profile.name}, a single mother of ${numKids} living in Miami-Dade County, FL.
         Her current estimated profile is:
         - Monthly Income: $${income}
         - Rent/Housing: $${rent}
@@ -89,7 +89,7 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
         - Monthly Expenses: $${totalExpenses}
         - Remaining Cash Flow: $${netCashFlow}
 
-        Provide practical, highly supportive, encouraging, and local advice. Mention Orange County programs by name (like Early Learning Coalition (ELC) childcare subsidies, Orange County Community Action rental support, CareerSource Central Florida, or Valencia College single-parent options) when relevant.
+        Provide practical, highly supportive, encouraging, and local advice. Mention Miami-Dade programs by name (like Early Learning Coalition of Miami-Dade/Monroe (ELC) childcare subsidies, Miami-Dade CAHSD rental support, CareerSource South Florida, or Miami Dade College options) when relevant.
         Keep answers supportive, well-formatted, and concise (under 200 words). Do not give generic corporate filler. Focus on steps she can take right now.
       `;
 
@@ -113,7 +113,7 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
         ...prev,
         {
           sender: 'ai',
-          text: "I apologize, I'm experiencing a brief network hiccup. If you are struggling with child care or rental bills, please reach out to the Early Learning Coalition of Orange County or 211 Central Florida directly for immediate relief. How can I assist you with another budgeting or job search question?"
+          text: "I apologize, I'm experiencing a brief network hiccup. If you are struggling with child care or rental bills, please reach out to the Early Learning Coalition of Miami-Dade/Monroe or JCS 211 Miami directly for immediate relief. How can I assist you with another budgeting or job search question?"
         }
       ]);
     } finally {
@@ -243,7 +243,7 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
               <div className="flex gap-2 items-start text-[11px] text-rose-700 font-medium mt-2">
                 <AlertTriangle className="w-4 h-4 shrink-0 text-rose-500" />
                 <span>
-                  <strong>Monthly Shortfall:</strong> You are spending more than your net income. Consider applying for <strong>ELC Daycare subsidies</strong> or exploring higher-paying administrative roles in Orange County.
+                  <strong>Monthly Shortfall:</strong> You are spending more than your net income. Consider applying for <strong>ELC Daycare subsidies</strong> or exploring higher-paying administrative roles in Miami-Dade County.
                 </span>
               </div>
             ) : (
@@ -266,7 +266,7 @@ export const FinancialStability: React.FC<FinancialStabilityProps> = ({ profile 
               <BookOpen className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="font-bold text-slate-900 text-lg">Orange County Resources</h2>
+              <h2 className="font-bold text-slate-900 text-lg">Miami-Dade County Resources</h2>
               <p className="text-xs text-slate-500">Local support programs for single mothers</p>
             </div>
           </div>

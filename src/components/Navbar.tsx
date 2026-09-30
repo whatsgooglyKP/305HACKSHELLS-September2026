@@ -26,14 +26,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-slate-900 tracking-tight text-base sm:text-lg">
-                  OCPS Stability
+                  Miami-Dade Stability
                 </span>
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
                   AI Career Coach
                 </span>
               </div>
               <p className="text-xs text-slate-500 hidden sm:block font-medium">
-                Economic Mobility & Financial Stability for Single Mothers in Orange County
+                Economic Mobility & Financial Stability for Single Mothers in Miami-Dade County
               </p>
             </div>
           </div>

@@ -48,10 +48,10 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
   // Fallback candidate experience and education if not structured in app object
   const defaultExperience = [
     {
-      company: 'ORLANDO HEALTH',
+      company: 'JACKSON HEALTH SYSTEM',
       title: 'Data Analyst, HR Analytics',
       dates: '10/2023 – 03/2026',
-      location: 'Orlando, FL',
+      location: 'Miami, FL',
       bullets: [
         `Leveraged Microsoft Copilot and DAX code to engineer executive Power BI reporting dashboards tailored to target goals at ${application?.company || 'company'}.`,
         'Spearheaded an enterprise automation initiative using MS Power Automate and SQL, streamlining manual HR dashboard pipelines resulting in a 37% productivity boost.',
@@ -63,7 +63,7 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
       company: 'AMAZON',
       title: 'Logistics Associate',
       dates: '10/2017 – 05/2019',
-      location: 'Orlando, FL',
+      location: 'Miami, FL',
       bullets: [
         'Collaborated with management to lead Lean Six Sigma project for Scan Compliance Rate across warehouse logistics workflows.',
         'Identified root cause training deficiencies and implemented a three-pronged standard operating procedure (SOP) training program for incoming personnel.',
@@ -76,9 +76,9 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
     { school: 'Udacity', degree: 'M.S., Artificial Intelligence', dates: '03/2026 – Present' },
     { school: 'Springboard', degree: 'Bootcamp, Data Analytics Career Track', dates: '02/2022 – 03/2023' },
     { school: 'Udacity', degree: 'Nanodegree, Business Analytics', dates: '06/2016 – 01/2017' },
-    { school: 'Seminole State College of Florida', degree: 'Technical Cert., Computer Programming', dates: '05/2015 – 06/2016' },
-    { school: 'Rollins College', degree: 'B.A., Economics', dates: '08/2011 – 08/2014' },
-    { school: 'Seminole State College of Florida', degree: 'A.A., Business', dates: '06/2008 – 05/2010' }
+    { school: 'Miami Dade College', degree: 'Technical Cert., Computer Programming', dates: '05/2015 – 06/2016' },
+    { school: 'Florida International University', degree: 'B.A., Economics', dates: '08/2011 – 08/2014' },
+    { school: 'Miami Dade College', degree: 'A.A., Business', dates: '06/2008 – 05/2010' }
   ];
 
   const expData = application?.tailoredResume?.experience || defaultExperience;
@@ -87,7 +87,7 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
     name: 'Kevin Pinard',
     email: 'Kevinpolymath@gmail.com',
     phone: '+1 (352) 406-3847',
-    location: 'Orlando, FL',
+    location: 'Miami, FL',
     title: application?.jobTitle || 'AI Agentic Engineer / HR Analytics Professional'
   };
 
@@ -249,7 +249,7 @@ export const ResumeTailorModal: React.FC<ResumeTailorModalProps> = ({
                       <span>•</span>
                       <span>{headerData.phone || '+1 (352) 406-3847'}</span>
                       <span>•</span>
-                      <span>{headerData.location || 'Orlando, FL'}</span>
+                      <span>{headerData.location || 'Miami, FL'}</span>
                     </p>
                   </div>
 

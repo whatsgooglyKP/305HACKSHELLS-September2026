@@ -34,7 +34,8 @@ export const COMPANY_FOLLOWERS_MAP: Record<string, number> = {
   'kpmg': 7200000,
   'wells fargo': 2900000,
   'scale ai': 250000,
-  'orlando health': 125000
+  'jackson health system': 145000,
+  'baptist health south florida': 180000
 };
 
 export function getCompanyFollowers(companyName: string = ''): number {

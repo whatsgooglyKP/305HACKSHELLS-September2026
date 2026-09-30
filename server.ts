@@ -32,7 +32,7 @@ Turn fragmented local help into a short, doable plan. Every reply should end wit
 
 COMMUNITY AND TONE:
 - Speak like a calm, straight neighbor, not a government brochure.
-- Default to English. Switch to Spanish or Haitian Creole seamlessly if she writes in Spanish/Creole or asks. Offer Haitian Creole terms when relevant (e.g., "Sèvis Prepari pou Lekòl" for School Readiness), and say when a human at ELC can help in Creole/Spanish (ELC Miami-Dade/Monroe Family Support Hotline: English, Spanish, Haitian Creole; 305-646-7220).
+- STRICT LANGUAGE ENFORCEMENT: Default to English. When the user writes in Spanish or selects the Spanish option, you MUST respond 100% in Spanish. When the user writes in Haitian Creole or selects the Haitian Creole option, you MUST respond 100% in Haitian Creole (Kreyòl Ayisyen). Never return English to a Spanish or Haitian Creole inquiry. Offer human contact numbers at ELC (ELC Miami-Dade/Monroe Family Support Line: 305-646-7220, Press 2 for Spanish, 3 for Creole).
 - Never shame work hours, immigration questions, cash jobs, or "I don't know which form."
 - Use first names of programs exactly: School Readiness (ELC of Miami-Dade/Monroe / Family Portal), DCF ACCESS Florida (SNAP, TANF, Medicaid), WIC, Head Start / Early Head Start, Florida VPK, JCS 211 Miami (Jewish Community Services of South Florida 211), Miami-Dade Community Action and Human Services Department (CAHSD), Miami-Dade Transit (Metrobus, Metrorail, Metromover).
 
@@ -48,7 +48,7 @@ BEHAVIOR RULES:
 - If a child is in danger: call 911 or Florida Abuse Hotline 1-800-96-ABUSE.
 - If immediate danger, housing tonight, or food tonight: lead with JCS 211 (305-631-4211) and Miami-Dade Homeless Trust (1-877-994-HELP).
 - Refuse to lie; provide truthful wording that still works.
-- HARD GEO RULE: Strictly Miami-Dade County, Florida (The 305). Never cite California (CalFresh, CalWORKs, 211OC, text 898211) or Orange County/Orlando (OCPS, Lynx).
+- STRICT MIAMI-DADE COUNTY SCOPE RULE: Exclusively narrowed to Miami-Dade County, Florida (The 305). Under NO circumstances should any resources outside Miami-Dade County be recommended. Any out-of-county inquiries (such as California or other regions) must be strictly redirected to local Miami-Dade agencies (ELC of Miami-Dade/Monroe, M-DCPS, Miami-Dade Transit, JCS 211 Miami).
 - OUTPUT SHAPE:
   1. One-sentence read of her situation.
   2. Which of the six functions you just used.
@@ -93,14 +93,15 @@ interface ReasonerOutput {
 }
 
 // Comprehensive Dynamic Reasoner Engine (Miami-Dade / 305 Specialized)
-const generateDynamicReasoningResponse = (message: string, context?: string): ReasonerOutput => {
+const generateDynamicReasoningResponse = (message: string, context?: string, language?: string): ReasonerOutput => {
   const userText = (message || '').trim();
   const lower = userText.toLowerCase();
 
-  // Detect Language
-  const isSpanish = /[¿¡]/.test(userText) ||
-    /\b(hola|ayuda|necesito|hijos|niños|trabajo|alquiler|desalojo|guardería|carta|papeles|estatus|horas|semana|miami|ingresos|limpieza|efectivo|dormir|calle)\b/i.test(lower);
-  const isCreole = /\b(bonjou|bonswa|mwen|ede|pitit|timoun|travay|kay|kreyol|kreyòl|lèt|èd|aswè|danjere|pase)\b/i.test(lower);
+  // Strict Language Detection
+  const isSpanish = (language === 'es') || /[¿¡]/.test(userText) ||
+    /\b(español|espanol|hola|ayuda|necesito|hijos|niños|trabajo|alquiler|desalojo|guardería|carta|papeles|estatus|horas|semana|miami|ingresos|limpieza|efectivo|dormir|calle|califico|pequeña habana)\b/i.test(lower);
+  const isCreole = (language === 'ht') ||
+    /\b(kreyol|kreyòl|ayisyen|bonjou|bonswa|mwen|ede|pitit|timoun|travay|kay|lèt|èd|aswè|danjere|pase|lekòl|pandan|ti moun)\b/i.test(lower);
 
   // 1. SAFETY & CRISIS TRIGGER: Child Abuse or Domestic Violence
   if (/\b(abuse|abused|hit|hitting|beating|danger|scared|violence|unsafe|golpe|abuso|vyolans|bat|danjere)\b/i.test(lower)) {
@@ -121,6 +122,25 @@ const generateDynamicReasoningResponse = (message: string, context?: string): Re
 
 💬 **Guión para la Operadora:**
 *"Necesito ayuda y protección inmediata para mí y mis hijos en Miami-Dade. Por favor comuníquenme con un albergue seguro de emergencia ahora mismo."*`
+      };
+    }
+    if (isCreole) {
+      return {
+        functionName: 'Entèvansyon Ijans ak Pwoteksyon Timoun',
+        reply: `Tanpri rete nan machin nan ak timoun yo, fèmen pòt yo ak kle, epi pran yon ti souf. Sekirite w ak sekirite pitit ou a se bagay ki pi enpòtan kounye a, anvan nenpòt papye oswa pwogram.
+
+### 3 Pwochen Aksyon Ijan w yo:
+1. **Rele 911 Touswit:** Si w an danje fizik oswa yon moun ap menase w kounye a, rele 911 pou lapolis ede w imedyatman.
+2. **Liy Èd pou Pwoteksyon Timoun nan Florid:** Rele **1-800-96-ABUSE** (1-800-962-2873) — liy sa a disponib 24 sou 24, konfidansyèl, an Kreyòl, Angle, ak Panyòl.
+3. **Abri Ijans Aswè a via JCS 211:** Rele **211** (oswa 305-631-4211) epi mande pou yo konekte w touswit ak abri vyolans domestik *The Lodge* oswa *Safespace Foundation* nan Miami-Dade.
+
+📞 **Nimewo Telefòn pou Ijans:**
+- Danje Iminan: **911**
+- Florida Abuse Hotline: **1-800-96-ABUSE (1-800-962-2873)**
+- JCS 211 Miami Helpline: **211** oswa **305-631-4211** (211miami.org)
+
+💬 **Mesaj pou Operatris la:**
+*"Mwen bezwen èd ijans ak abri sekirite pou mwen ak pitit mwen yo nan Konte Miami-Dade kounye a. Tanpri konekte m ak sèvis kriz vyolans domestik touswit."*`
       };
     }
     return {
@@ -163,6 +183,25 @@ const generateDynamicReasoningResponse = (message: string, context?: string): Re
 *"Hola, soy madre con mis hijos en Miami-Dade y no tenemos un lugar seguro donde dormir esta noche. Necesitamos asistencia de emergencia con el Homeless Trust ahora mismo."*`
       };
     }
+    if (isCreole) {
+      return {
+        functionName: 'Kriz Lojman Ijans ak Manje Aswè a',
+        reply: `Mwen tande w, epi ou pa poukont ou. Lè w gen yon avi pou mete w deyò jodi a epi w pa gen kote pou w dòmi aswè a, nou pa ka tann lis datant. Men kijan pou n jwenn abri ijans ak manje pou ou ak pitit ou yo nan Miami-Dade jodi a.
+
+### 3 Aksyon Ijan w pou Jodi a:
+1. **Rele Miami-Dade Homeless Trust (1-877-994-4357):** Sa a se sant prensipal pou jwenn kabann abri ijans pou fanmi aswè a nan Konte Miami-Dade. Rele yo touswit pou anrejistre fanmi w.
+2. **Rele JCS 211 pou Manje Jodi a ak Èd Lwaye:** Fè **211** (oswa 305-631-4211) pou jwenn kote yo distribye manje gratis jodi a ak èd ijans pou anpeche degèpisman.
+3. **Kontakte M-DCPS Project UP-START:** Si timoun ou yo nan lekòl piblik Miami-Dade, rele **305-995-7558**. Lwa federal McKinney-Vento ba yo dwa a manje gratis nan lekòl, transpò gratis, epi pèsonn pa ka retire yo nan lekòl yo.
+
+📞 **Nimewo Èd Ijans:**
+- Miami-Dade Homeless Trust: **1-877-994-4357 (1-877-994-HELP)**
+- JCS 211 Miami Helpline: **211** oswa **305-631-4211** (211miami.org)
+- M-DCPS Project UP-START: **305-995-7558**
+
+💬 **Mesaj pou Operatris la:**
+*"Bonjou, mwen se yon manman ak pitit mwen nan Konte Miami-Dade k ap fè fas ak pèdi kay aswè a. Tanpri konekte m ak abri ijans ak asistans manje touswit."*`
+      };
+    }
     return {
       functionName: 'Emergency Housing & Food Crisis',
       reply: `I hear you, and you don't have to face this alone. When you're facing eviction today and have nowhere to sleep tonight, we can't wait on 6-month waitlists. Here is how we get immediate shelter and emergency food for you and your kids in Miami-Dade today.
@@ -182,16 +221,58 @@ const generateDynamicReasoningResponse = (message: string, context?: string): Re
     };
   }
 
-  // 3. HARD GEOFENCE: California or Orange County / Orlando Entrapment
-  if (/\b(898211|calfresh|calworks|211oc|california|orange county|ocps|orlando|lynx)\b/i.test(lower)) {
+  // 3. HARD GEOFENCE: Out-of-County / California Entrapment (Strict Miami-Dade scope)
+  if (/\b(898211|calfresh|calworks|211oc|california|out of county|other county)\b/i.test(lower)) {
+    if (isSpanish) {
+      return {
+        functionName: 'Protección de Alcance Exclusivo para Miami-Dade',
+        reply: `¡Un momento! Ese programa o número es fuera de nuestra área. Este asistente está estrictamente dedicado al Condado de Miami-Dade, Florida.
+
+**Puntos Clave:**
+- **No envíes mensajes de texto a 898211** — ese es un número fuera del área. En el Condado de Miami-Dade, marca el **211** o visita \`211miami.org\` (Jewish Community Services of South Florida).
+- **CalFresh / CalWORKs** son programas fuera de Florida. En Florida, tu programa de asistencia para alimentos y efectivo es **DCF ACCESS Florida (SNAP y TANF)**.
+- En Miami-Dade, tu sistema escolar oficial es **M-DCPS (Miami-Dade County Public Schools)** y tu red de transporte es **Miami-Dade Transit (Metrobus y Metrorail)**.
+
+### Tus 3 Pasos Locales en Miami-Dade:
+1. **Llamar al JCS 211 Miami:** Marca el **211** o llama al **305-631-4211** directamente para alivio de alquiler, luz y despensas en Miami-Dade.
+2. **Solicitar Asistencia de Alimentos en ACCESS Florida:** Ingresa a [myflfamilies.com/accessflorida](https://www.myflfamilies.com/services/public-assistance/access-florida).
+3. **Solicitar Cuidado Infantil en Miami-Dade:** Visita el Portal Familiar de Early Learning en [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) para ELC de Miami-Dade/Monroe.
+
+📞 **Contactos en Miami-Dade:**
+- JCS 211 Miami: **211** o **305-631-4211**
+- DCF ACCESS Florida: **1-850-300-4323**
+- ELC de Miami-Dade/Monroe: **305-646-7220**`
+      };
+    }
+    if (isCreole) {
+      return {
+        functionName: 'Pwoteksyon ak Limitasyon pou Konte Miami-Dade',
+        reply: `Atansyon! Pwogram oswa nimewo sa a pa nan zòn Miami-Dade nou an. Sèvis sa a konsantre sèlman sou Konte Miami-Dade, Florid.
+
+**Pwen Enpòtan pou Miami-Dade:**
+- **Pa voye tèks bay 898211** — nimewo sa a deyò zòn Florid la. Nan Konte Miami-Dade, rele **211** oswa vizite \`211miami.org\` (Jewish Community Services of South Florida).
+- Pwogram èd manje ak lajan nan Florid se **DCF ACCESS Florida (SNAP ak TANF)**.
+- Nan Miami-Dade, sistèm lekòl piblik ou se **M-DCPS (Miami-Dade County Public Schools)** epi transpò w se **Miami-Dade Transit (Metrobus ak Metrorail)**.
+
+### 3 Pwochen Aksyon w nan Miami-Dade:
+1. **Rele JCS 211 Miami:** Rele **211** oswa **305-631-4211** dirèkteman pou èd lwaye, kouran, ak manje nan Miami-Dade.
+2. **Fè Demann Èd Manje (SNAP):** Ale sou [myflfamilies.com/accessflorida](https://www.myflfamilies.com/services/public-assistance/access-florida).
+3. **Fè Demann Sibvansyon Gadri:** Vizite pòtal la sou [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) pou ELC Miami-Dade/Monroe.
+
+📞 **Nimewo Ofisyèl nan Miami-Dade:**
+- JCS 211 Miami: **211** oswa **305-631-4211**
+- DCF ACCESS Florida: **1-850-300-4323**
+- ELC Miami-Dade/Monroe: **305-646-7220**`
+      };
+    }
     return {
       functionName: 'Geofence Protection & Miami Redirection',
       reply: `Hold on—that number or program is outside our Miami-Dade area! Let's get you connected to the right local Miami agency instead of sending you down a dead-end.
 
 **Key Local Miami Corrections:**
-- **Do NOT text 898211** — that is Orange County, California. In Miami-Dade County, Florida, dial **211** or visit \`211miami.org\` (Jewish Community Services of South Florida).
-- **CalFresh / CalWORKs** are California state programs. In Florida, your food and cash assistance program is **DCF ACCESS Florida (SNAP & TANF)**.
-- **OCPS and Lynx** are in Orlando (Orange County, FL). Here in Miami, your school system is **M-DCPS** and your transit system is **Miami-Dade Transit (MDT)**.
+- **Do NOT text 898211** — that is outside Florida. In Miami-Dade County, Florida, dial **211** or visit \`211miami.org\` (Jewish Community Services of South Florida).
+- **CalFresh / CalWORKs** are outside Florida. In Florida, your food and cash assistance program is **DCF ACCESS Florida (SNAP & TANF)**.
+- Here in Miami, your school system is **M-DCPS** and your transit system is **Miami-Dade Transit (MDT)**.
 
 ### Your 3 Local Miami Next Steps:
 1. **Call JCS 211 Miami:** Dial **211** or call **305-631-4211** directly for local rent relief, utility help, and food pantries across Miami-Dade.
@@ -213,6 +294,64 @@ const generateDynamicReasoningResponse = (message: string, context?: string): Re
     const dateMatch = userText.match(/\b(october|november|december|january|february|march|april|may|june|july|august|september|\d{1,2}\/\d{1,2})\s*\d{1,2}(,\s*\d{4})?/i);
     const deadline = dateMatch ? dateMatch[0] : 'the date stamped on your notice (typically 10-14 days)';
     const sender = lower.includes('elc') ? 'ELC of Miami-Dade/Monroe' : lower.includes('dcf') ? 'DCF ACCESS Florida' : 'your assistance agency';
+
+    if (isSpanish) {
+      return {
+        functionName: 'Función 1: Lector de Cartas',
+        reply: `Revisemos este aviso juntas para que tu solicitud se mantenga activa y no pierdas tu lugar en la lista de espera de Miami-Dade.
+
+**Qué Significa este Aviso:**
+${sender === 'ELC of Miami-Dade/Monroe' ? 'ELC de Miami-Dade/Monroe' : 'Tu agencia de asistencia'} te advierte que tu cupo o solicitud de School Readiness será **cancelada y terminada** si no envías la verificación de ingresos de 4 semanas consecutivas antes del **${deadline}**. Como tu estado actualmente es 'Activo', mantener tus documentos al día es lo que te asegura el subsidio de cuidado infantil.
+
+### Tus 3 Pasos a Seguir Antes del ${deadline}:
+1. **Reunir tus 4 Semanas Consecutivas de Ingresos:**
+   - Si recibes talones de pago: reúne los talones de las últimas 4 semanas consecutivas.
+   - Si te pagan en efectivo: descarga el formulario oficial **'ELC Cash Employment Log'** de \`elcmdm.org\` y haz que tu empleador lo firme.
+2. **Subir los Documentos al Portal Familiar de Early Learning de Florida:**
+   - Ingresa a [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/).
+   - Abre tu caso pendiente y sube fotos claras o documentos PDF de tus talones o el registro de efectivo firmado.
+3. **Llamar a ELC Family Support para Confirmar Aprobación:**
+   - Llama al **305-646-7220** (Presiona 2 para español).
+   - Proporciona tu número de caso y pregunta: *"¿Pueden verificar que mis 4 semanas de comprobantes de pago fueron recibidas y mi estatus está seguro?"*
+
+📞 **Portales y Teléfonos Oficiales:**
+- Portal Familiar de Early Learning: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- Línea de Apoyo Familiar ELC Miami-Dade/Monroe: **305-646-7220**
+- Centro de Documentos ELC: [elcmdm.org](https://www.elcmdm.org/)
+
+💬 **Mensaje para Pegar en el Portal:**
+*"Hola, he subido mis 4 semanas consecutivas de verificación de ingresos antes del ${deadline} para mantener activa mi solicitud de School Readiness. Por favor revisen y confirmen la recepción. ¡Muchas gracias!"*`
+      };
+    }
+
+    if (isCreole) {
+      return {
+        functionName: 'Fonksyon 1: Lektè Lèt',
+        reply: `Ann gade lèt sa a ansanm pou dosye w la rete aktif epi pou w pa pèdi plas ou sou lis datant la nan Miami-Dade.
+
+**Kisa Lèt sa a Vle Di:**
+${sender === 'ELC of Miami-Dade/Monroe' ? 'ELC Miami-Dade/Monroe' : 'Ajans asistans lan'} ap avèti w ke plas ou sou lis datant School Readiness la ap **anile epi fèmen** si w pa voye prèv peman pou 4 semèn youn dèyè lòt anvan **${deadline}**. Piske sitiyasyon w make 'Aktif', mete dokiman w yo ajou se sa k ap garanti plas ou pou timoun nan jwenn gadri sibvansyone.
+
+### 3 Pwochen Aksyon w pou w Fè Anvan ${deadline}:
+1. **Rasanble Prèv Peman 4 Semèn yo:**
+   - Si w resevwa ti papye chèk (pay stubs): rasanble papye pou 4 dènye semèn yo.
+   - Si yo peye w an kach: telechaje fòmilè ofisyèl **'ELC Cash Employment Log'** sou \`elcmdm.org\` epi fè patwon w siyen l.
+2. **Voye Dokiman yo sou Pòtal Fanmi Early Learning Florid la:**
+   - Konekte sou [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/).
+   - Louvri dosye w la, epi telechaje foto klè oswa fichye PDF tout dokiman yo.
+3. **Rele ELC Family Support pou Konfime:**
+   - Rele **305-646-7220** (Peze 3 pou Kreyòl).
+   - Bay nimewo dosye w la epi mande: *"Èske nou ka verifye si nou resevwa prèv peman 4 semèn mwen yo epi dosye m an sekirite?"*
+
+📞 **Pòtal ak Nimewo Ofisyèl:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220**
+- ELC Sant Dokiman: [elcmdm.org](https://www.elcmdm.org/)
+
+💬 **Ti Mesaj pou w Kole sou Pòtal la:**
+*"Bonjou, mwen voye prèv revni 4 semèn mwen yo anvan ${deadline} pou dosye School Readiness mwen ka rete aktif. Tanpri revize l epi konfime pou mwen. Mèsi!"*`
+      };
+    }
 
     return {
       functionName: 'Function 1: Letter Reader',
@@ -452,6 +591,64 @@ ${sender} is warning you that your School Readiness waitlist spot or application
   const zip = zipMatch ? zipMatch[0] : '33142';
   const neighborhood = getMiamiNeighborhood(zip);
 
+  if (isSpanish) {
+    return {
+      functionName: 'Función 2: Mapa de Elegibilidad',
+      reply: `Evaluando la situación de tu familia en **${neighborhood} (Código Postal ${zip})**, aquí tienes un desglose claro de los programas de cuidado infantil y estabilidad financiera para los cuales probablemente calificas en el Condado de Miami-Dade:
+
+**Programas para tu Familia:**
+- **School Readiness de ELC Miami-Dade (Subsidio de Cuidado Infantil):** Eres **probablemente elegible** si trabajas o estudias al menos 20 horas por semana y tus ingresos están dentro de los límites del programa. La cuota mensual de copago para padres se ajusta a tus ingresos, generalmente entre $30 y $60 al mes.
+- **Florida VPK (Prekínder Gratuito):** Cualquier niño que cumpla 4 años antes del 1 de septiembre tiene derecho a **VPK 100% gratuito** (540 horas de instrucción escolar) sin importar los ingresos del hogar.
+- **ACCESS Florida SNAP (Alimentos) y Medicaid:** Las madres trabajadoras en este rango de ingresos generalmente califican para cupones de alimentos mensuales y cobertura médica completa de Medicaid para sus hijos.
+
+### Tus 3 Pasos Siguientes para Inscribirte:
+1. **Completar tu Solicitud de School Readiness:**
+   - Ingresa al Portal Familiar de Early Learning de Florida en [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/). Sube tu comprobante de al menos 20 horas semanales de trabajo y tu dirección en Miami-Dade.
+2. **Solicitar Cupones de Alimentos (SNAP) y Medicaid:**
+   - Visita [myflfamilies.com/accessflorida](https://www.myflfamilies.com/services/public-assistance/access-florida) y envía tu solicitud en ACCESS Florida.
+3. **Llamar al JCS 211 para Recursos Comunitarios en ${neighborhood}:**
+   - Marca el **211** (o 305-631-4211) para conectarte con despensas de alimentos, bancos de pañales y fondos de emergencia locales abiertos hoy en tu área.
+
+📞 **Portales y Teléfonos Oficiales:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC de Miami-Dade/Monroe: **305-646-7220** (elcmdm.org) — presiona 2 para español
+- DCF ACCESS Florida: **1-850-300-4323** — presiona 2 para español
+- JCS 211 Miami Helpline: **211** o **305-631-4211** (211miami.org)
+
+💬 **Guión para tu Solicitud:**
+*"Hola, soy madre de familia viviendo en ${neighborhood}. Estoy solicitando School Readiness para cuidado infantil y apoyo de alimentos con ACCESS Florida. Por favor indíquenme qué documentos de verificación necesitan. ¡Muchas gracias!"*`
+    };
+  }
+
+  if (isCreole) {
+    return {
+      functionName: 'Fonksyon 2: Kat Elijiblite',
+      reply: `Gade sitiyasyon fanmi w nan **${neighborhood} (Kòd Postal ${zip})**, men yon esplikasyon klè sou pwogram gadri ak estabilite finansye ou gen anpil chans pou w kalifye pou yo nan Konte Miami-Dade:
+
+**Pwogram ki Bon pou Fanmi w:**
+- **ELC School Readiness (Sibvansyon Gadri pou Timoun):** Ou **gen anpil chans pou w kalifye** si w ap travay oswa nan lekòl pou pi piti 20 èdtan pa semèn epi revni w nan limit pwogram nan. Frè paran an ba anpil, anjeneral ant $30 ak $60 pa mwa.
+- **Florida VPK (Klas Pre-K gratis pou timoun 4 an):** Nenpòt timoun ki gen 4 an anvan 1ye septanm gen dwa a **VPK 100% gratis** (540 èdtan lekòl) san gade sou revni fanmi an.
+- **ACCESS Florida SNAP (Èd Manje) ak Medicaid:** Yon manman k ap travay nan nivo revni sa a kalifye pou èd manje chak mwa ak asirans sante Medicaid konplè pou timoun yo.
+
+### 3 Pwochen Aksyon w pou w Enskri:
+1. **Voye Demann School Readiness ou sou Pòtal la:**
+   - Konekte sou Pòtal Fanmi Early Learning Florid la sou [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/). Mete prèv 20 èdtan travay pa semèn ak adrès ou nan Miami-Dade.
+2. **Fè Demann Èd Manje SNAP ak Medicaid:**
+   - Ale sou [myflfamilies.com/accessflorida](https://www.myflfamilies.com/services/public-assistance/access-florida) epi soumèt fòmilè ACCESS Florida a.
+3. **Rele JCS 211 pou Èd nan Kominote ${neighborhood}:**
+   - Rele **211** (oswa 305-631-4211) pou jwenn kote yo bay manje gratis, kouchèt pou ti bebe, ak èd lwaye ijans nan zòn ou kounye a.
+
+📞 **Pòtal ak Nimewo Telefòn Ofisyèl:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220** (elcmdm.org) — Peze 3 pou Kreyòl
+- DCF ACCESS Florida: **1-850-300-4323** — Peze 3 pou Kreyòl
+- JCS 211 Miami Helpline: Rele **211** oswa **305-631-4211** (211miami.org)
+
+💬 **Ti Mesaj pou w Itilize:**
+*"Bonjou, mwen se yon manman k ap viv nan ${neighborhood}. Mwen bezwen èd pou timoun mwen ale lekòl ak gadri pandan m ap travay, epi mwen vle konnen ki papye mwen dwe voye bay ELC ak ACCESS Florida. Mèsi!"*`
+    };
+  }
+
   return {
     functionName: 'Function 2: Eligibility Map',
     reply: `Looking at your family's situation in **${neighborhood} (ZIP ${zip})**, here is a clear breakdown of the local child care and financial stability programs you likely qualify for:
@@ -482,23 +679,30 @@ ${sender} is warning you that your School Readiness waitlist spot or application
 
 // API Route: Miami-Dade Single Mom Advisor Chat
 app.post('/api/chat', async (req, res) => {
-  const { message, context, apiKey } = req.body;
-  console.log('Incoming POST /api/chat payload:', { message, context, hasApiKey: Boolean(apiKey) });
+  const { message, context, language, apiKey } = req.body;
+  console.log('Incoming POST /api/chat payload:', { message, context, language, hasApiKey: Boolean(apiKey) });
 
   const gemini = getGeminiClient(apiKey);
 
   if (!gemini) {
     console.log('Running Dynamic Local Reasoner Engine for Miami-Dade...');
-    const result = generateDynamicReasoningResponse(message, context);
+    const result = generateDynamicReasoningResponse(message, context, language);
     return res.json({ reply: result.reply, functionName: result.functionName, mode: 'Dynamic 305 Engine' });
   }
 
   try {
+    let langInstruction = '';
+    if (language === 'es') {
+      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user selected Spanish. You MUST output your ENTIRE response in Spanish (Español). Do not use English under any circumstances.';
+    } else if (language === 'ht') {
+      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user selected Haitian Creole. You MUST output your ENTIRE response in Haitian Creole (Kreyòl Ayisyen). Do not use English under any circumstances.';
+    }
+
     const response = await gemini.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: [
         {
-          text: `Context of user situation / current state: ${context || 'No explicit context loaded.'}\n\nUser query: ${message}`
+          text: `Context of user situation / current state: ${context || 'No explicit context loaded.'}\n\nUser query: ${message}${langInstruction}`
         }
       ],
       config: {
@@ -509,7 +713,7 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply: response.text || "I apologize, I didn't receive a response. Please try again.", mode: 'gemini-2.5' });
   } catch (err: any) {
     console.error('Gemini API Error (falling back to dynamic reasoner):', err.message);
-    const result = generateDynamicReasoningResponse(message, context);
+    const result = generateDynamicReasoningResponse(message, context, language);
     return res.json({ reply: result.reply, functionName: result.functionName, mode: 'Dynamic 305 Engine' });
   }
 });

@@ -45,7 +45,7 @@ Missing a single deadline notice, experiencing a temporary drop below 20 work ho
 - Strictly blocks out-of-area programs and hotlines:
   - **Rejects texting 898211** (redirects to calling **211** or visiting `211miami.org` for Jewish Community Services of South Florida).
   - **Corrects California references** (CalFresh / CalWORKs ➔ Florida DCF ACCESS).
-  - **Corrects Orlando / Orange County references** (OCPS / Lynx ➔ M-DCPS and Miami-Dade Transit).
+  - **Strictly confines scope to Miami-Dade County** (rejects out-of-county or generic services, directing strictly to M-DCPS and Miami-Dade Transit).
 
 ---
 

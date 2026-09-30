@@ -103,11 +103,16 @@ export const App: React.FC = () => {
   ];
 
   const quickPills = [
-    { label: '🚨 Safety / Abuse Help', text: 'I am scared. My partner hit my 4-year-old child and we are hiding in the car. What do I do?' },
-    { label: '🏠 Eviction Tonight', text: 'I got an eviction notice on my door in Allapattah today. I have no money and my kids need a safe place to sleep tonight. Please help.' },
-    { label: '🌴 Geofence Check', text: 'Can I text 898211 or apply to CalFresh or OCPS in Orlando to get rent help?' },
-    { label: '🇪🇸 En Español', text: 'Hola, tengo una niña de 3 años en La Pequeña Habana (33125) y trabajo 22 horas a la semana. ¿Califico para cuidado infantil?' },
-    { label: '🇭🇹 Kreyòl Ayisyen', text: 'Bonjou, mwen se yon manman nan Little Haiti (33150). Mwen bezwen èd pou timoun mwen ale lekòl pandan mwen travay.' }
+    {
+      label: '🇪🇸 En Español',
+      text: 'Hola, tengo una niña de 3 años en La Pequeña Habana (33125) y trabajo 22 horas a la semana. ¿Califico para cuidado infantil?',
+      lang: 'es'
+    },
+    {
+      label: '🇭🇹 Kreyòl Ayisyen',
+      text: 'Bonjou, mwen se yon manman nan Little Haiti (33150). Mwen bezwen èd pou timoun mwen ale lekòl pandan mwen travay.',
+      lang: 'ht'
+    }
   ];
 
   const extractFunctionBadge = (text: string) => {
@@ -127,7 +132,7 @@ export const App: React.FC = () => {
     }
   };
 
-  const handleSendMessage = async (overrideText?: string, overrideContext?: string) => {
+  const handleSendMessage = async (overrideText?: string, overrideContext?: string, forceLang?: string) => {
     const textToSend = overrideText || inputText;
     // CRITICAL: If user typed in inputText directly, do not pass stale activeContext
     const contextToSend = overrideContext !== undefined ? overrideContext : (overrideText ? activeContext : undefined);
@@ -151,6 +156,7 @@ export const App: React.FC = () => {
         body: JSON.stringify({
           message: textToSend,
           context: contextToSend,
+          language: forceLang,
           apiKey: customApiKey.trim() || undefined
         })
       });
@@ -442,7 +448,7 @@ export const App: React.FC = () => {
                   onClick={() => {
                     setActiveScenarioId(null);
                     setActiveContext('');
-                    handleSendMessage(pill.text, '');
+                    handleSendMessage(pill.text, '', pill.lang);
                   }}
                   className="whitespace-nowrap text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors"
                 >
@@ -537,10 +543,10 @@ export const App: React.FC = () => {
               <div className="bg-emerald-50/80 border border-emerald-200/80 rounded-2xl p-3.5">
                 <span className="font-bold text-emerald-900 flex items-center gap-1.5 mb-1">
                   <AlertTriangle className="w-3.5 h-3.5 text-emerald-700" />
-                  Miami-Dade Geofence (The 305!)
+                  Miami-Dade County Scope (The 305!)
                 </span>
                 <p className="text-[11px] text-emerald-800 leading-normal font-medium">
-                  <strong>HARD GEO RULE:</strong> Serves Miami-Dade County, Florida. Any California citation (CalFresh, 211OC, text 898211) OR Orange County, FL (Orlando, OCPS, Lynx bus) is strictly redirected to Miami-Dade counterparts.
+                  <strong>STRICT SCOPE RULE:</strong> Exclusively serves Miami-Dade County, Florida. Any out-of-county inquiries (such as California or other regions) are strictly blocked and redirected to local Miami-Dade counterparts.
                 </p>
               </div>
 
