@@ -1,126 +1,82 @@
-# 305 HACKSHELLS: Miami-Dade Single Mother Financial Stability Agent 🌟
-> **Empowering Public School Families through Autonomous Subsidies & Benefits Routing in Miami-Dade County (The 305)**
+# Miami-Dade Single Mother Financial Stability Agent
 
-Built for the **305 Hackathon (September 2026)**, this AI agent serves single mothers and primary caregivers of children enrolled in or applying to **Miami-Dade County Public Schools (M-DCPS)** in South Florida.
+**An AI teammate that turns School Readiness, ACCESS, 211, and night-shift transit into three next actions — not five websites between her and the paycheck.**
 
-> [!IMPORTANT]
-> ### 🏆 For Hackathon Judges: How to Run & Demo in 60 Seconds
-> **No API keys or environment variables required!** The agent includes an embedded **Dynamic 305 Offline Reasoning Engine** that runs out-of-the-box.
-> 1. `git clone https://github.com/whatsgooglyKP/305HACKSHELLS-September2026.git`
-> 2. `cd 305HACKSHELLS-September2026 && npm install`
-> 3. `npm run dev` ➔ Open **http://localhost:xxxx** (mine was **http://localhost:3000**).
-> 
-> 👉 **For the 2-minute guided evaluation tour and copy-paste test prompts, see the [Judge Quickstart & Demo Guide (JUDGES_DEMO_GUIDE.md)](JUDGES_DEMO_GUIDE.md).**
+305 HackShells · EmpowHER · September 2026 · Miami-Dade County (The 305)
+
+[Demo video](https://youtu.be/xK7wPKbHD80) · [GitHub](https://github.com/whatsgooglyKP/305HACKSHELLS-September2026) · [Slides](https://docs.google.com/presentation/d/17-adP60TBK2RyyR_s0Y27DELprxePx_vlI3NTeZtE1E/edit?usp=sharing)
 
 ---
 
-## 🎯 The Mission & Problem Statement
-Navigating public assistance in Miami-Dade County is a fragmented, bureaucratic maze. A low-income single mother attempting to stabilize her family must juggle multiple disconnected agencies:
-- **Early Learning Coalition (ELC) of Miami-Dade/Monroe** for School Readiness child care subsidies and waitlists.
-- **DCF ACCESS Florida** for SNAP (Food Stamps), TANF cash assistance, and Medicaid healthcare.
-- **Miami-Dade Community Action and Human Services (CAHSD)** for FPL electric and water crisis grants (LIHEAP).
-- **Miami-Dade Transit (MDT)** to coordinate late-shift Metrobus and Metrorail commutes around daycare closing times.
+## Inspiration
 
-Missing a single deadline notice, experiencing a temporary drop below 20 work hours, or misplacing one document can trigger immediate benefits cancellation.
+I was motivated because I am in a relationship with a single mother, and one of the reasons I care so deeply about her is the strength she shows day in and day out.
 
-**The Solution:** The 305 Stability Agent turns fragmented local help into a **short, doable plan**. Every response speaks like a calm, straight neighbor (not a government brochure) and concludes with **at most THREE concrete next actions**—specifying what to do, where, by when, and what to bring.
+I have tried to apply for government assistance myself. It is an arduous process. I could not imagine doing it while also worrying that a missed letter or a dropped childcare slot could put housing — and stability with her kids — at risk.
 
----
+In Miami-Dade that is not a hypothetical.
 
-## ⚡ The 6 Specialized Functions
+- About **two in five** households with children here are single-parent homes.
+- United Way Miami’s ALICE data says **84%** of single-female-headed households with children cannot cover the basics.
+- MIT’s living wage is about **$42/hour** for one adult and one child, and about **$52/hour** for one adult and two kids.
+- Infant care runs on the order of **$13,500** a year.
 
-| Function | Name | Description | Key Capabilities |
-| :---: | :--- | :--- | :--- |
-| **1** | **Letter Reader & Document Audit** | Decodes official letters & notices | Audits warning letters, flags termination deadlines, and lists exact documents required (e.g. 4 consecutive weeks of pay stubs or signed Cash Employment Logs). |
-| **2** | **Subsidies Eligibility Map** | Evaluates local assistance | Evaluates likely eligibility for School Readiness, VPK (free for 4-year-olds), SNAP, and Medicaid using minimal inputs (ZIP, children's ages, hours) without asking for SSNs. |
-| **3** | **Revalidation Tracker** | Waitlist & status protector | Clarifies that "Active" means waiting list, tracks 6-month recertification deadlines, and guides mothers on filing a "Change in Purpose of Care" when work hours fluctuate. |
-| **4** | **Document Checklist Builder** | Zero-defect application prep | Distinguishes between what documents the mother has vs. what is missing (e.g., rejecting old leases, providing official ELC Cash Employment Logs for cleaning/informal work). |
-| **5** | **Shift & Transit Planner** | Hospitality & airport night care | Routes night/evening shifts (South Beach, Brickell, MIA) around Miami-Dade Transit (MDT) schedules and directs mothers to licensed Family Child Care Homes (FCCH) offering overnight care. |
-| **6** | **Private Phone Teammate** | Safe mobile consultation | Enables safe, confidential inquiry between shifts from a phone in a parking lot. Clarifies that citizen children qualify regardless of parental immigration status and that child benefits do not trigger public charge. |
+The programs exist — School Readiness at the Early Learning Coalition of Miami-Dade/Monroe, DCF ACCESS, WIC, 211 / United Way Miami / JCS, Head Start, VPK, Miami-Dade Transit — but they live on five websites, with six-month revalidations, PDFs, and letters she is supposed to decode on a break.
+
+Missing one step can cost the job that was supposed to get her out.
+
+This project is a brain that can hold that maze at once. Not another resource directory.
 
 ---
 
-## 🚨 Built-in Crisis Safeguards & Geofencing
+## What it does
 
-### 1. Safety & Child Abuse Emergency Trigger
-- Immediate detection of child danger or domestic violence (`hit`, `beaten`, `unsafe`, `scared`, `danger`).
-- Instantly bypasses paperwork to provide **911**, the **Florida Abuse Hotline (1-800-96-ABUSE / 1-800-962-2873)**, and confidential transfers to Miami-Dade domestic violence shelters (*The Lodge* & *Safespace Foundation*) via **JCS 211**.
+The agent turns a messy week of benefits, childcare, and shift work into **at most three next actions**: what to do, where (portal, phone, office), by when, and what to bring.
 
-### 2. Immediate Eviction & Emergency Food Trigger
-- Triggers when a mother faces homelessness tonight or cannot feed her children today.
-- Directly routes to the **Miami-Dade Homeless Trust Helpline (1-877-994-4357)** for emergency family shelter beds, **JCS 211** for food pantries open today, and **M-DCPS Project UP-START (305-995-7558)** for McKinney-Vento student rights.
+### Six functions
 
-### 3. Hard South Florida Geofence
-- Strictly blocks out-of-area programs and hotlines:
-  - **Rejects texting 898211** (redirects to calling **211** or visiting `211miami.org` for Jewish Community Services of South Florida).
-  - **Corrects California references** (CalFresh / CalWORKs ➔ Florida DCF ACCESS).
-  - **Strictly confines scope to Miami-Dade County** (rejects out-of-county or generic services, directing strictly to M-DCPS and Miami-Dade Transit).
+Same spec on the Gemma path and on the hosted Gemini demo.
 
----
+| # | Function | What she gets |
+|---|---|---|
+| 1 | **Letter reader** | Paste or describe a DCF, ELC, M-DCPS, or landlord notice. The agent names the sender, the deadline, the documents, and what happens if she misses it. |
+| 2 | **Eligibility map** | From ZIP, kids’ ages, hours, and a rough income band, it maps School Readiness, SNAP / TANF / Medicaid, WIC, Head Start / Early Head Start, VPK, and 211 rent/utility help. It never guarantees approval. |
+| 3 | **Revalidation tracker** | Flags the ELC six-month revalidation, explains that **Active is not a paid Monday seat**, and drafts the change-of-hours note so a new night shift does not break the 20-hour rule. |
+| 4 | **Document checklist** | Checks a pay stub, lease, birth record, or employment letter against the official packet and marks HAVE / MISSING / UNCLEAR. |
+| 5 | **Shift-and-transit planner** | Handles “I start nights at a Beach hotel / MIA Monday, two kids, ZIP 33147.” It does not pretend 8 a.m.–3 p.m. center care solves a night shift. Metrobus / Metrorail are constraints. |
+| 6 | **Private phone teammate** | Short answers. No passwords. Income, kids, and status treated as sensitive. Always hands her ELC CCR&R **305-646-7220**, **211**, or DCF ACCESS, plus a one-line script for the clerk. |
 
-## 🗣️ Trilingual Cultural Grounding (The 305)
-Miami-Dade is home to diverse English-, Spanish-, and Haitian Creole-speaking communities:
-- Full native Spanish support with culturally attuned tone and vocabulary.
-- Haitian Creole terminology and direct referrals to Creole-speaking specialists at the ELC Miami-Dade customer service line (**305-646-7220**, Press 3 for Creole).
+### Language lock
 
----
+Default UI and starter prompts stay English.
 
-## 🏗️ Architecture & Technology Stack
+- English in → English out
+- Spanish in → Spanish out
+- Haitian Creole in → Haitian Creole out
+- Unclear → English
 
-```
-305HACKSHELLS-September2026/
-├── src/
-│   ├── App.tsx             # Interactive React UI with scenario playground & live badges
-│   ├── main.tsx            # Application entrypoint
-│   └── index.css           # Tailwind CSS styling & animations
-├── server.ts               # Node.js/Express backend with Gemini 2.5 Flash & Dynamic 305 Engine
-├── docs/
-│   └── production_and_evaluation_blueprint.md  # Production roadmap, eval rubric & pitch
-├── index.html              # HTML5 template
-├── package.json            # Project dependencies & scripts
-├── vite.config.ts          # Vite build & bundler configuration
-└── .gitattributes          # Git LFS tracking for demo media
-```
+Program names stay in English inside every reply.
 
-- **Frontend**: React 19, Vite, Tailwind CSS, Lucide React icons.
-- **Backend**: Express.js server in TypeScript, with dual-mode reasoning:
-  1. **Google Gemini 2.5 Flash API**: Live multimodal LLM reasoning grounded in M-DCPS system instructions.
-  2. **Dynamic 305 Offline Reasoner Engine**: Resilient, instant fallback engine delivering localized guidance without external latency or outages.
+### What it is not
+
+Not DCF, not ELC, not M-DCPS, not a lawyer, not a caseworker with authority. Human review stays at those offices.
 
 ---
 
-## 🚀 Quickstart & Local Setup for Judges
+## How we built it
 
-### Prerequisites
-- Node.js 18+ (Node 20+ recommended)
-- npm (comes with Node)
+- **Problem lock:** Miami-Dade coordination gap — subsidy + benefits + transit + shift work as one workflow.
+- **Hosted demo:** React / Express app plus Google Cloud Agent Platform.
+- **Live model:** Gemini.
+- **Tools:** search + URL context on allowlisted Miami-Dade / Florida pages (`elcmdm.org`, Family Portal / ACCESS, 211 Miami, M-DCPS, Miami-Dade Transit).
+- **Gemma path:** `gemma/letter_reader.py` runs the same six-function prompt on a `gemma-*` model id so the GDG / Kaggle chip is real, not a caption.
+- **Product is the prompt:** three-action output, crisis routing (211 first; 911 / Florida Abuse Hotline if a child is in danger), hard geofence, language match.
+- **Offline reasoner:** if the API is down, a Miami-Dade rule engine still answers the core scenarios instead of going blank.
 
-### Installation & Run in 3 Commands:
+### Run the demo (no API key required)
+
 ```bash
-# 1. Clone the repository
 git clone https://github.com/whatsgooglyKP/305HACKSHELLS-September2026.git
 cd 305HACKSHELLS-September2026
-
-# 2. Install dependencies
 npm install
-
-# 3. Start the application
 npm run dev
-```
-
-Open your browser at **`http://localhost:3000`** to interact with the live assistant and the 6 interactive scenarios.
-
-> [!NOTE]
-> **No API Key is required to test!** The application operates with an offline-first **Dynamic 305 Reasoning Engine** that delivers 100% localized Miami-Dade guidance, trilingual Spanish & Haitian Creole responses, and crisis safety guardrails out-of-the-box.
-> 
-> For a 2-minute step-by-step evaluation tour and ready-to-test prompts, see the **[Judge Quickstart & Demo Guide (JUDGES_DEMO_GUIDE.md)](JUDGES_DEMO_GUIDE.md)**.
-
----
-
-## 📊 Evaluation & Quality Flywheel
-See [`docs/production_and_evaluation_blueprint.md`](docs/production_and_evaluation_blueprint.md) for the full LLM-as-a-judge evaluation suite, rubric definitions, and the 305 Hackathon pitch slide deck.
-
----
-
-## 📜 License
-MIT License. Built with ❤️ for Miami-Dade County Public School families.
