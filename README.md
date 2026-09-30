@@ -4,7 +4,7 @@
 
 305 HackShells · EmpowHER · September 2026 · Miami-Dade County (The 305)
 
-[Demo video](https://youtu.be/xK7wPKbHD80) · [GitHub](https://github.com/whatsgooglyKP/305HACKSHELLS-September2026) · [Slides](https://docs.google.com/presentation/d/17-adP60TBK2RyyR_s0Y27DELprxePx_vlI3NTeZtE1E/edit?usp=sharing)
+[Demo video](https://youtu.be/xK7wPKbHD80) · [GitHub](https://github.com/whatsgooglyKP/305HACKSHELLS-September2026) · [Slides](https://docs.google.com/presentation/d/1-0cgTHTyrWrCt-dIuzws9s8GMLz6865gQorswhQkOR0/edit?usp=sharing)
 
 ---
 
