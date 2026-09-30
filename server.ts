@@ -40,7 +40,15 @@ Turn fragmented local help into a short, doable plan. Every reply should end wit
 
 COMMUNITY AND TONE:
 - Speak like a calm, straight neighbor, not a government brochure.
-- STRICT LANGUAGE ENFORCEMENT: Default to English. When the user writes in Spanish or selects the Spanish option, you MUST respond 100% in Spanish. When the user writes in Haitian Creole or selects the Haitian Creole option, you MUST respond 100% in Haitian Creole (Kreyòl Ayisyen). Never return English to a Spanish or Haitian Creole inquiry. Offer human contact numbers at ELC (ELC Miami-Dade/Monroe Family Support Line: 305-646-7220, Press 2 for Spanish, 3 for Creole).
+- STRICT LANGUAGE LOCK RULES:
+  * The reply language MUST strictly match the user's latest message:
+    - English in -> English out.
+    - Spanish in -> Spanish out.
+    - Haitian Creole in -> Haitian Creole out.
+    - Mixed, ambiguous, or unclear -> Default to English.
+  * CRITICAL: Never answer English questions in Spanish or Haitian Creole! If the user writes in English, you MUST reply entirely in English.
+  * Program names MUST stay in English even inside Spanish or Haitian Creole replies (School Readiness, ACCESS, SNAP, VPK, Metrobus, ELC of Miami-Dade/Monroe, JCS 211).
+  * In Spanish/Creole replies, offer human contact numbers at ELC (ELC Miami-Dade/Monroe Family Support Line: 305-646-7220, Press 2 for Spanish, 3 for Creole).
 - Never shame work hours, immigration questions, cash jobs, or "I don't know which form."
 - Use first names of programs exactly: School Readiness (ELC of Miami-Dade/Monroe / Family Portal), DCF ACCESS Florida (SNAP, TANF, Medicaid), WIC, Head Start / Early Head Start, Florida VPK, JCS 211 Miami (Jewish Community Services of South Florida 211), Miami-Dade Community Action and Human Services Department (CAHSD), Miami-Dade Transit (Metrobus, Metrorail, Metromover).
 
@@ -95,6 +103,37 @@ const getMiamiNeighborhood = (zip: string): string => {
   return map[zip] || 'Miami-Dade County';
 };
 
+// Robust, strictly-enforced language detection
+const detectMessageLanguage = (text: string, explicitLang?: string): 'es' | 'ht' | 'en' => {
+  if (explicitLang === 'es') return 'es';
+  if (explicitLang === 'ht') return 'ht';
+  if (explicitLang === 'en') return 'en';
+
+  const clean = (text || '').trim();
+  if (!clean) return 'en';
+
+  // Haitian Creole strong signals (distinct Haitian Creole words/phrases)
+  const creoleSignals = /\b(kreyòl|kreyol|ayisyen|bonjou|bonswa|mwen|nou|yo|li|genyen|gen|gadri|lendi|madi|mèkredi|mekredi|jedi|vandredi|samdi|dimanch|eske|èske|timoun|ti moun|pitit|travay|lèt|aswè|aswe|danjere|paske|kijan|kisa|kote|konbyen|souple|mesi|mèsi|estati)\b/i;
+
+  // Spanish strong punctuation
+  const hasSpanishPunctuation = /[¿¡]/.test(clean);
+
+  // Spanish vocabulary (strictly excluding English place names like "miami", "florida", or common cognates)
+  const spanishWords = clean.match(/\b(hola|buenos días|buenas tardes|buenas noches|por favor|gracias|tengo|tiene|tienen|tenemos|necesito|necesita|necesitamos|ayuda|ayúdame|ayudame|hijos|hijas|niños|niñas|niño|niña|cuidado|lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo|desalojo|alquiler|guardería|guarderia|semana|semanas|cuánto|cuanto|cómo|como puedo|dónde|donde|cuándo|cuando|estoy|está|esta|están|estan|trabajo|trabajando|ingresos|califico|califica|estatus|dice|dijo)\b/gi) || [];
+
+  // English vocabulary signals
+  const englishWords = clean.match(/\b(the|is|are|was|were|have|has|had|do|does|did|can|could|will|would|should|my|your|our|their|i|you|he|she|it|we|they|what|where|when|why|how|who|which|this|that|these|those|in|on|at|to|for|with|from|by|about|says|say|said|care|monday|tuesday|wednesday|thursday|friday|saturday|sunday|help|need|work|hours|status|active)\b/gi) || [];
+
+  const isCreole = creoleSignals.test(clean);
+  const isSpanish = hasSpanishPunctuation || (spanishWords.length >= 2 && spanishWords.length > englishWords.length);
+
+  // Mixed or unclear -> Default to English
+  if (isCreole && isSpanish) return 'en';
+  if (isCreole) return 'ht';
+  if (isSpanish) return 'es';
+  return 'en';
+};
+
 interface ReasonerOutput {
   reply: string;
   functionName: string;
@@ -105,11 +144,10 @@ const generateDynamicReasoningResponse = (message: string, context?: string, lan
   const userText = (message || '').trim();
   const lower = userText.toLowerCase();
 
-  // Strict Language Detection
-  const isSpanish = (language === 'es') || /[¿¡]/.test(userText) ||
-    /\b(español|espanol|hola|ayuda|necesito|hijos|niños|trabajo|alquiler|desalojo|guardería|carta|papeles|estatus|horas|semana|miami|ingresos|limpieza|efectivo|dormir|calle|califico|pequeña habana)\b/i.test(lower);
-  const isCreole = (language === 'ht') ||
-    /\b(kreyol|kreyòl|ayisyen|bonjou|bonswa|mwen|ede|pitit|timoun|travay|kay|lèt|èd|aswè|danjere|pase|lekòl|pandan|ti moun)\b/i.test(lower);
+  // Strict Language Detection via detectMessageLanguage
+  const targetLang = detectMessageLanguage(userText, language);
+  const isSpanish = targetLang === 'es';
+  const isCreole = targetLang === 'ht';
 
   // 1. SAFETY & CRISIS TRIGGER: Child Abuse or Domestic Violence
   if (/\b(abuse|abused|hit|hitting|beating|danger|scared|violence|unsafe|golpe|abuso|vyolans|bat|danjere)\b/i.test(lower)) {
@@ -389,8 +427,140 @@ ${sender} is warning you that your School Readiness waitlist spot or application
     };
   }
 
-  // 5. FUNCTION 3: REVALIDATION TRACKER
-  if (/\b(revalidate|revalidation|active status|status is active|hours dropped|hours fell|change in purpose of care|under 20 hours|less than 20 hours|revalidar|lista de espera)\b/i.test(lower)) {
+  // 5. FUNCTION 3: REVALIDATION TRACKER & WAITLIST STATUS PROTECTOR
+  if (/\b(revalidate|revalidation|active status|status is active|status says active|says active|dice active|di active|have care monday|care monday|cuidado el lunes|gadri lendi|hours dropped|hours fell|change in purpose of care|under 20 hours|less than 20 hours|revalidar|lista de espera)\b/i.test(lower)) {
+    const isWaitlistCareCheck = /monday|lunes|lendi|have care|tengo cuidado|gen gadri|dice active|di active|says active/i.test(lower);
+
+    if (isSpanish) {
+      if (isWaitlistCareCheck) {
+        return {
+          functionName: 'Función 3: Rastreador de Revalidación y Lista de Espera',
+          reply: `Vamos a aclarar tu estatus de inmediato para que sepas exactamente cuál es tu situación con el cuidado infantil en el Condado de Miami-Dade:
+
+**Lo que significa el estatus 'Active':**
+**El estatus 'Active' significa que estás en la lista de espera activa, NO que ya tengas un cupo o asiento de cuidado infantil asignado para este lunes.** La Early Learning Coalition (ELC) de Miami-Dade/Monroe mantiene las solicitudes en lista de espera hasta que haya fondos o cupos disponibles. No puedes enviar a tu niño al centro de cuidado hasta que ELC emita un **Certificado de Elegibilidad / Autorización de Matrícula** oficial.
+
+### Tus 3 Pasos Siguientes:
+1. **Verificar tu Posición en el Portal Familiar de Florida:**
+   - Ingresa a [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) y confirma que todos tus documentos estén aprobados y tu revalidación de 6 meses al día.
+2. **Llamar a ELC Miami-Dade/Monroe:**
+   - Llama al **305-646-7220** (presiona 2 para español, lunes a viernes 8:00 AM – 5:00 PM). Dale tu número de caso al especialista y pregunta si tu expediente ya fue seleccionado para matrícula o si sigues en lista de espera.
+3. **Buscar Respaldo de Emergencia si Trabajas este Lunes:**
+   - Si debes trabajar el lunes y no tienes respaldo, marca el **211** (Línea de Ayuda JCS 211 Miami al 305-631-4211) para conectarte con guarderías comunitarias de relevo o programas de emergencia de Miami-Dade CAHSD.
+
+📞 **Portales y Teléfonos Oficiales:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220** (presiona 2 para español)
+- JCS 211 Miami Helpline: **211** o **305-631-4211** (211miami.org)
+
+💬 **Guión para el Especialista de ELC:**
+*"Hola, el estatus de mi solicitud de School Readiness aparece como Active en el portal. ¿Podrían verificar si mi expediente ya fue seleccionado para un cupo de cuidado infantil o si continúo en la lista de espera? Muchas gracias."*`
+        };
+      }
+
+      return {
+        functionName: 'Función 3: Rastreador de Revalidación',
+        reply: `Vamos a proteger tu lugar en la lista de espera de School Readiness en Miami-Dade para que este cambio temporal de horas no ponga en riesgo tu subsidio de cuidado infantil.
+
+**Reglas Importantes de Miami-Dade:**
+1. **El estatus 'Active' significa que estás en la lista de espera**, no que ya tengas un cupo asignado. ELC elimina a las familias que no revalidan cada 6 meses.
+2. Florida School Readiness exige **al menos 20 horas semanales** de trabajo o estudio. Si tus horas bajan de 20, debes notificar un **'Change in Purpose of Care'** de inmediato antes de que ELC marque tu caso.
+
+### Tus 3 Pasos Siguientes:
+1. **Verificar tu Fecha de Revalidación:**
+   - Ingresa a [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) y confirma la fecha exacta de tu revalidación de 6 meses.
+2. **Enviar Notificación de Cambio de Horas:**
+   - Sube una carta de tu empleador explicando el horario regular o inscríbete en un curso para alcanzar las 20 horas requeridas.
+3. **Llamar a un Especialista de Lista de Espera de ELC:**
+   - Llama al **305-646-7220** (presiona 2 para español) y verifica que tu expediente esté al día sin banderas de documentos.
+
+📞 **Portales y Teléfonos Oficiales:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220** (elcmdm.org)
+
+💬 **Nota para el Portal:**
+*"Hola, actualizo mi expediente de School Readiness. Mis horas fluctúan temporalmente pero mi propósito de cuidado se mantiene activo. Deseo mantener mi estatus Active en la lista de espera de Miami-Dade. Gracias."*`
+      };
+    }
+
+    if (isCreole) {
+      if (isWaitlistCareCheck) {
+        return {
+          functionName: 'Fonksyon 3: Suivi Revalidasyon ak Lis Datant',
+          reply: `Ann klarifye sitiyasyon w touswit pou w konnen egzakteman ki kote w ye pou gadri timoun lendi a nan Konte Miami-Dade:
+
+**Sa estati 'Active' vle di:**
+**Estati 'Active' vle di aplikasyon w lan sou lis datant aktif la, sa PA vle di ou deja gen yon plas gadri asire pou lendi a.** ELC Miami-Dade/Monroe kenbe dosye yo sou lis datant jiskaske gen lajan oswa yon plas ki disponib. Ou pa ka mennen pitit ou nan gadri a toutotan ELC pa ba w yon **Sètifika Elijiblite / Otorizasyon Enskripsyon** ofisyèl.
+
+### 3 Pwochen Aksyon w:
+1. **Verifye Estati w sou Pòtal Fanmi Florid la:**
+   - Konekte sou [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) pou konfime tout dokiman w yo apwouve epi revalidasyon 6 mwa w la ajou.
+2. **Rele ELC Miami-Dade/Monroe Family Support:**
+   - Rele **305-646-7220** (Peze 3 pou Kreyòl, lendi rive vandredi 8:00 AM – 5:00 PM). Bay espesyalis la nimewo dosye w la epi mande si dosye w la soti sou lis datant pou enskripsyon.
+3. **Chèche Opsyon Gadri Ijans si w Dwe Travay Lendi:**
+   - Si w dwe travay lendi epi w pa gen lòt moun pou gade timoun yo, rele **211** (JCS 211 Miami Helpline nan 305-631-4211) pou jwenn èd kominotè ijans ak pwogram Miami-Dade CAHSD.
+
+📞 **Pòtal ak Nimewo Ofisyèl:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220** (Peze 3 pou Kreyòl)
+- JCS 211 Miami Helpline: Rele **211** oswa **305-631-4211** (211miami.org)
+
+💬 **Ti Mesaj pou Espesyalis ELC la:**
+*"Bonjou, estati School Readiness mwen sou pòtal la make Active. Èske nou ka verifye pou mwen si mwen jwenn yon plas gadri deja oswa si mwen toujou sou lis datant? Mèsi!"*`
+        };
+      }
+
+      return {
+        functionName: 'Fonksyon 3: Suivi Revalidasyon',
+        reply: `Ann pwoteje plas ou sou lis datant School Readiness nan Miami-Dade pou chanjman tanporè nan èdtan travay ou pa lakòz ou pèdi sibvansyon gadri a.
+
+**Règ Enpòtan nan Miami-Dade:**
+1. **Estati 'Active' vle di ou sou lis datant la**, sa pa vle di ou deja gen yon plas gadri peye. ELC retire fanmi ki pa fè revalidasyon chak 6 mwa.
+2. Florida School Readiness mande **pou pi piti 20 èdtan travay oswa lekòl chak semèn**. Si èdtan w yo desann anba 20, ou dwe voye yon rapò **'Change in Purpose of Care'** touswit.
+
+### 3 Pwochen Aksyon w:
+1. **Verifye Dat Revalidasyon w:**
+   - Konekte sou [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) pou wè dat egzak revalidasyon 6 mwa w la dwe fèt.
+2. **Soumèt Rapò Chanjman Èdtan Travay la:**
+   - Voye yon lèt bòs travay ou a ki eksplike orè regilye w oswa enskri nan yon fòmasyon pou konplete 20 èdtan yo.
+3. **Pale ak yon Espesyalis Lis Datant nan ELC:**
+   - Rele ELC nan **305-646-7220** (Peze 3 pou Kreyòl) epi konfime dosye w la an bon eta.
+
+📞 **Pòtal ak Nimewo Ofisyèl:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe: **305-646-7220** (elcmdm.org)
+
+💬 **Ti Mesaj pou w Mete sou Pòtal la:**
+*"Bonjou, m ap mete dosye School Readiness mwen ajou. Èdtan travay mwen yo varye tanporèman men aktivite regilye mwen rete aktif. Mwen vle kenbe estati Active mwen sou lis datant Miami-Dade la. Mèsi."*`
+      };
+    }
+
+    if (isWaitlistCareCheck) {
+      return {
+        functionName: 'Function 3: Revalidation Tracker',
+        reply: `Let's clarify your enrollment status right away so you know exactly where you stand for child care in Miami-Dade County:
+
+**What 'Active' Status Means:**
+**'Active' status means your application is active on the waitlist, NOT that you have an enrolled or funded child care seat for Monday.** ELC of Miami-Dade/Monroe places eligible applications on an active waiting list until subsidized funding or a provider vacancy opens. You cannot send your child to a provider until ELC issues an official **Certificate of Eligibility / Enrollment Authorization**.
+
+### Your 3 Next Steps:
+1. **Verify Your Waitlist Position on the Florida Family Portal:**
+   - Log into [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/) to confirm all required documents are marked 'Approved' and that your 6-month revalidation date is current.
+2. **Call ELC Miami-Dade/Monroe Family Support:**
+   - Call **305-646-7220** (Mon–Fri 8:00 AM – 5:00 PM). Give the specialist your case number and ask whether your file has been pulled from the waitlist for enrollment.
+3. **Explore Immediate Emergency Care Options if Needed Monday:**
+   - If you must work Monday with no backup, dial **211** (JCS 211 Miami Helpline at 305-631-4211) or contact Miami-Dade Community Action and Human Services (CAHSD) for local community childcare respite.
+
+📞 **Official Portals & Contacts:**
+- Florida Early Learning Family Portal: [familyservices.floridaearlylearning.com](https://familyservices.floridaearlylearning.com/)
+- ELC Miami-Dade/Monroe Family Support: **305-646-7220**
+- JCS 211 Miami Helpline: Dial **211** or **305-631-4211** (211miami.org)
+
+💬 **Script to Read to ELC Specialist:**
+*"Hello, my School Readiness application status is Active on the portal. Can you please check if my file has been selected for an enrollment certificate or if I remain on the waitlist? Thank you."*`
+      };
+    }
+
     return {
       functionName: 'Function 3: Revalidation Tracker',
       reply: `Let's protect your spot on the waitlist so this temporary change in hours doesn't cause you to lose your child care subsidy.
@@ -688,22 +858,25 @@ ${sender} is warning you that your School Readiness waitlist spot or application
 // API Route: Miami-Dade Single Mom Advisor Chat
 app.post('/api/chat', async (req, res) => {
   const { message, context, language, apiKey } = req.body;
-  console.log('Incoming POST /api/chat payload:', { message, context, language, hasApiKey: Boolean(apiKey) });
+  const detectedLang = detectMessageLanguage(message, language);
+  console.log('Incoming POST /api/chat payload:', { message, context, explicitLang: language, detectedLang, hasApiKey: Boolean(apiKey) });
 
   const gemini = getGeminiClient(apiKey);
 
   if (!gemini) {
-    console.log('Running Dynamic Local Reasoner Engine for Miami-Dade...');
-    const result = generateDynamicReasoningResponse(message, context, language);
+    console.log(`Running Dynamic Local Reasoner Engine for Miami-Dade [lang: ${detectedLang}]...`);
+    const result = generateDynamicReasoningResponse(message, context, detectedLang);
     return res.json({ reply: result.reply, functionName: result.functionName, mode: 'Dynamic 305 Engine' });
   }
 
   try {
     let langInstruction = '';
-    if (language === 'es') {
-      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user selected Spanish. You MUST output your ENTIRE response in Spanish (Español). Do not use English under any circumstances.';
-    } else if (language === 'ht') {
-      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user selected Haitian Creole. You MUST output your ENTIRE response in Haitian Creole (Kreyòl Ayisyen). Do not use English under any circumstances.';
+    if (detectedLang === 'es') {
+      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user wrote in Spanish. You MUST output your ENTIRE response in Spanish (Español). Program names must stay in English (School Readiness, ACCESS, SNAP, VPK, Metrobus, ELC of Miami-Dade/Monroe). Do not use English for the rest of your reply.';
+    } else if (detectedLang === 'ht') {
+      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user wrote in Haitian Creole. You MUST output your ENTIRE response in Haitian Creole (Kreyòl Ayisyen). Program names must stay in English (School Readiness, ACCESS, SNAP, VPK, Metrobus, ELC of Miami-Dade/Monroe). Do not use English for the rest of your reply.';
+    } else {
+      langInstruction = '\n\nSTRICT LANGUAGE DIRECTIVE: The user wrote in English. You MUST output your ENTIRE response in English. Under NO circumstances should you respond in Spanish or Haitian Creole.';
     }
 
     const response = await gemini.models.generateContent({
@@ -721,7 +894,7 @@ app.post('/api/chat', async (req, res) => {
     res.json({ reply: response.text || "I apologize, I didn't receive a response. Please try again.", mode: 'gemini-2.5' });
   } catch (err: any) {
     console.error('Gemini API Error (falling back to dynamic reasoner):', err.message);
-    const result = generateDynamicReasoningResponse(message, context, language);
+    const result = generateDynamicReasoningResponse(message, context, detectedLang);
     return res.json({ reply: result.reply, functionName: result.functionName, mode: 'Dynamic 305 Engine' });
   }
 });

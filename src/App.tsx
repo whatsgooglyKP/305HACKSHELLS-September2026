@@ -25,7 +25,7 @@ export const App: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       sender: 'ai',
-      text: "¡Hola! Men dy pou ou! Hello! I am your Miami-Dade Single Mother Financial Stability Advisor. I serve single mothers and caregivers in Miami-Dade County (The 305).\n\nTell me about an ELC notice you received, ask if you're eligible for childcare subsidies or SNAP, audit your document packet, or plan out late hospitality shifts with Miami-Dade Transit. How can I help you support your children today?",
+      text: "Hello! I am your Miami-Dade Single Mother Financial Stability Advisor. I serve single mothers and caregivers in Miami-Dade County (The 305).\n\nTell me about an ELC notice you received, ask if you're eligible for childcare subsidies or SNAP, audit your document packet, or plan out late hospitality shifts with Miami-Dade Transit. How can I help you support your children today?",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -209,7 +209,7 @@ export const App: React.FC = () => {
     setMessages([
       {
         sender: 'ai',
-        text: "¡Hola! Men dy pou ou! Hello! I am your Miami-Dade Single Mother Financial Stability Advisor. I serve single mothers and caregivers in Miami-Dade County (The 305).\n\nTell me about an ELC notice you received, ask if you're eligible for childcare subsidies or SNAP, audit your document packet, or plan out late hospitality shifts with Miami-Dade Transit. How can I help you support your children today?",
+        text: "Hello! I am your Miami-Dade Single Mother Financial Stability Advisor. I serve single mothers and caregivers in Miami-Dade County (The 305).\n\nTell me about an ELC notice you received, ask if you're eligible for childcare subsidies or SNAP, audit your document packet, or plan out late hospitality shifts with Miami-Dade Transit. How can I help you support your children today?",
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
