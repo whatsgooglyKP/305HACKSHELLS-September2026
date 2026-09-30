@@ -3,6 +3,15 @@
 
 Built for the **305 Hackathon (September 2026)**, this AI agent serves single mothers and primary caregivers of children enrolled in or applying to **Miami-Dade County Public Schools (M-DCPS)** in South Florida.
 
+> [!IMPORTANT]
+> ### 🏆 For Hackathon Judges: How to Run & Demo in 60 Seconds
+> **No API keys or environment variables required!** The agent includes an embedded **Dynamic 305 Offline Reasoning Engine** that runs out-of-the-box.
+> 1. `git clone https://github.com/whatsgooglyKP/305HACKSHELLS-September2026.git`
+> 2. `cd 305HACKSHELLS-September2026 && npm install`
+> 3. `npm run dev` ➔ Open **http://localhost:3000**
+> 
+> 👉 **For the 2-minute guided evaluation tour and copy-paste test prompts, see the [Judge Quickstart & Demo Guide (JUDGES_DEMO_GUIDE.md)](JUDGES_DEMO_GUIDE.md).**
+
 ---
 
 ## 🎯 The Mission & Problem Statement
@@ -80,29 +89,31 @@ Miami-Dade is home to diverse English-, Spanish-, and Haitian Creole-speaking co
 
 ---
 
-## 🚀 Quickstart & Local Setup
+## 🚀 Quickstart & Local Setup for Judges
 
 ### Prerequisites
 - Node.js 18+ (Node 20+ recommended)
-- npm or bun
+- npm (comes with Node)
 
-### Installation
+### Installation & Run in 3 Commands:
 ```bash
-# Clone the repository
+# 1. Clone the repository
 git clone https://github.com/whatsgooglyKP/305HACKSHELLS-September2026.git
 cd 305HACKSHELLS-September2026
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# (Optional) Add your Gemini API key to .env
-# GEMINI_API_KEY=your_gemini_api_key_here
-
-# Start the development server
+# 3. Start the application
 npm run dev
 ```
 
 Open your browser at **`http://localhost:3000`** to interact with the live assistant and the 6 interactive scenarios.
+
+> [!NOTE]
+> **No API Key is required to test!** The application operates with an offline-first **Dynamic 305 Reasoning Engine** that delivers 100% localized Miami-Dade guidance, trilingual Spanish & Haitian Creole responses, and crisis safety guardrails out-of-the-box.
+> 
+> For a 2-minute step-by-step evaluation tour and ready-to-test prompts, see the **[Judge Quickstart & Demo Guide (JUDGES_DEMO_GUIDE.md)](JUDGES_DEMO_GUIDE.md)**.
 
 ---
 

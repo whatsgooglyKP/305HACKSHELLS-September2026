@@ -1,7 +1,15 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
+
+// Safely load .env file if it exists, without crashing if it does not
+if (fs.existsSync('.env') && typeof (process as any).loadEnvFile === 'function') {
+  try {
+    (process as any).loadEnvFile('.env');
+  } catch {}
+}
 
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
