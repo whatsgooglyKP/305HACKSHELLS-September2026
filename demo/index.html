@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>305 Financial Stability Agent — judge demo</title>
+<style>
+  :root { color-scheme: dark; --bg:#14110e; --panel:#241c16; --line:#4a3b2e; --text:#f6efe6; --muted:#cbbba8; --sun:#f0b429; --coral:#e07a5f; }
+  * { box-sizing: border-box; }
+  body { margin:0; font:15px/1.45 Georgia, serif; background:var(--bg); color:var(--text); }
+  main { max-width:880px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:28px; margin:0 0 6px; }
+  .badge { display:inline-block; font-size:11px; letter-spacing:.04em; text-transform:uppercase; background:var(--sun); color:#2a1c08; border-radius:99px; padding:3px 8px; }
+  .note { color:var(--muted); }
+  label { display:block; font-size:12px; margin:12px 0 4px; color:var(--muted); }
+  input, textarea, select { width:100%; background:#1a140f; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; font:inherit; }
+  textarea { min-height:130px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  @media (max-width:640px) { .grid { grid-template-columns:1fr; } }
+  button { background:var(--sun); color:#2a1c08; border:0; border-radius:8px; padding:10px 14px; font-weight:700; cursor:pointer; }
+  #out { margin-top:16px; white-space:pre-wrap; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px; display:none; }
+  #out.warn { border-color:var(--coral); }
+  a { color:var(--sun); }
+</style>
+</head>
+<body>
+<main>
+  <div class="badge">Judge path · no install · no API key</div>
+  <h1>Miami-Dade Financial Stability Agent</h1>
+  <p class="note">Open this file and paste a letter. Safety language stays on this page. Other replies use the local three-action map. This is not an eligibility decision.</p>
+  <div class="grid">
+    <div><label for="zip">ZIP</label><input id="zip" value="33142" /></div>
+    <div><label for="lang">Language</label>
+      <select id="lang"><option value="en">English</option><option value="es">Español</option><option value="ht">Kreyòl</option></select>
+    </div>
+  </div>
+  <label for="kids">Kids and shift</label>
+  <input id="kids" value="One child, age 3. Works 6pm to 2am." />
+  <label for="letter">Letter or question</label>
+  <textarea id="letter" placeholder="Paste a DCF, ELC, school, or landlord notice..."></textarea>
+  <p><button id="go" type="button">Get three next actions</button></p>
+  <div id="out"></div>
+  <p class="note">Emergency: 911. Florida Abuse Hotline 1-800-962-2873. JCS 211 or 305-631-4211. Homeless Trust 1-877-994-4357. ELC CCR&R 305-646-7220.</p>
+</main>
+<script>
+function crisis(text, lang) {
+  if (!/\b(abuse|abused|hit|hitting|beating|danger|scared|violence|unsafe|golpe|abuso|vyolans|locked out|nowhere to sleep|evict)\b/i.test(text)) return null;
+  const en = "Safety path. The model was not called.\n\n1. If you are in danger now, call 911.\n2. Florida Abuse Hotline: 1-800-962-2873.\n3. Tonight: JCS 211 or 305-631-4211, and Miami-Dade Homeless Trust 1-877-994-4357.\n\nScript: I need a safe place tonight for myself and my children in Miami-Dade.";
+  const es = "Ruta de seguridad. No se llam\u00f3 al modelo.\n\n1. Si hay peligro ahora, llama al 911.\n2. L\u00ednea de abuso de Florida: 1-800-962-2873.\n3. Esta noche: JCS 211 o 305-631-4211, y Homeless Trust 1-877-994-4357.";
+  const ht = "Chemen sekirite. Mod\u00e8l la pa rele.\n\n1. Si gen danje kounye a, rele 911.\n2. Liy abi Florid: 1-800-962-2873.\n3. Asw\u00e8 a: JCS 211 oswa 305-631-4211, ak Homeless Trust 1-877-994-4357.";
+  return lang === "es" ? es : lang === "ht" ? ht : en;
+}
+function reply(text, zip, kids, lang) {
+  const lower = text.toLowerCase();
+  const sender = /elc|school readiness|child care|childcare|garderie|cuidado/.test(lower) ? "Early Learning Coalition of Miami-Dade/Monroe" : /dcf|access|snap|medicaid|tanf/.test(lower) ? "DCF ACCESS" : /landlord|rent|evict/.test(lower) ? "Housing notice" : "Notice you pasted";
+  const night = /night|6pm|2am|noche|nwit/.test((text + " " + kids).toLowerCase());
+  const care = night ? "A daytime center does not cover a night shift. Ask ELC CCR&R at 305-646-7220 about hours, and say Active status is not a paid Monday seat." : "Call ELC CCR&R at 305-646-7220 and ask which office takes this notice.";
+  if (lang === "es") return "Funci\u00f3n: lector de cartas\nRemitente probable: " + sender + "\nZIP " + zip + ". " + kids + "\n\n1. Anota la fecha de la carta antes del turno.\n2. " + care + "\n3. Lleva identificaci\u00f3n, la carta, prueba de domicilio en " + zip + " y la edad del ni\u00f1o. Marca 211 si tambi\u00e9n hay renta o comida.\n\nEsto no es una decisi\u00f3n de elegibilidad.";
+  if (lang === "ht") return "Fonksyon: lekt\u00e8 l\u00e8t\nMoun ki voye l: " + sender + "\nZIP " + zip + ". " + kids + "\n\n1. Ekri dat ki sou l\u00e8t la anvan travay.\n2. " + care + "\n3. Pote idantite, l\u00e8t la, pr\u00e8v adr\u00e8s nan " + zip + ", ak laj pitit la. Rele 211 si gen lwaye oswa manje tou.\n\nSa se pa yon desizyon elijibilite.";
+  return "Function: letter reader\nSender guess: " + sender + "\nZIP " + zip + ". " + kids + "\n\n1. Write the date on the letter onto a calendar before the shift.\n2. " + care + "\n3. Bring ID, the letter, proof of address in " + zip + ", and the child's age. Call 211 if rent or food is also in play.\n\nThis is a demo map, not an eligibility decision.";
+}
+document.getElementById("go").onclick = () => {
+  const text = document.getElementById("letter").value.trim();
+  const lang = document.getElementById("lang").value;
+  const out = document.getElementById("out");
+  if (!text) { out.style.display = "block"; out.className = ""; out.textContent = "Paste a letter or a question first."; return; }
+  const safe = crisis(text, lang);
+  out.style.display = "block";
+  out.className = safe ? "warn" : "";
+  out.textContent = safe || reply(text, document.getElementById("zip").value.trim() || "33142", document.getElementById("kids").value.trim(), lang);
+};
+</script>
+</body>
+</html>
